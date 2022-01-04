@@ -1,0 +1,30 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Launch Application",
+            "request": "launch",
+            "mainClass": "flowcontext.core.run.Application",
+            "projectName": "flow-context-core"
+        },
+        {
+            "type": "java",
+            "name": "client",
+            "console": "internalConsole",
+            "envFile": "${workspaceFolder}/local.env",
+            "request": "launch",
+            "mainClass": "flowcontext.client.Application",
+            "projectName": "client"
+        },
+        {
+            "type": "java",
+            "name": "core",
+            "console": "internalConsole",
+            "envFile": "${workspaceFolder}/local.env",
+            "request": "launch",
+            "mainClass": "flowcontext.core.Application",
+            "projectName": "flow-context-core"
+        }
+    ]
+}

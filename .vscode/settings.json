@@ -1,0 +1,12 @@
+{
+    "java.configuration.updateBuildConfiguration": "disabled",
+    "files.exclude": {
+        "**/.git": true,
+        ".gradle": true,
+        "**/build": true,
+        "**/bin" : true,
+        // "client":true,
+    },
+    "java.codeGeneration.toString.skipNullValues": true
+}
+
