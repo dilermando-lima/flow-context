@@ -1,72 +1,96 @@
 package flowcontext.core.context;
 
-import java.util.LinkedList;
-import java.util.UUID;
-
-import flowcontext.core.agreement.Agreement;
-import flowcontext.core.base.FlowBase;
-import flowcontext.core.base.FlowBase.RunFlowBase;
+import flowcontext.core.base.FlowBase.StatusStepEnum;
 import flowcontext.core.base.FlowBase.StepBase;
-import flowcontext.core.base.FlowBase.StepContextBase;
 import flowcontext.core.base.FlowBase.TypeStepEnum;
+import flowcontext.core.function.ConsumerContext;
 import flowcontext.core.function.FunctionContext;
 import flowcontext.core.function.PredictContext;
 
+public class StepContext<I> implements StepBase<I>{
 
-public class StepContext<I,O> implements StepContextBase<I,O> {
+    private final String name;
+    private final String key;
+    private final TypeStepEnum type;
+    private final int order;
+   
+    private PredictContext<I> predictContext;
+    private FunctionContext<Object, I> functionContext;
+    private ConsumerContext<I> consumerContext;
 
-    private LinkedList<StepBase<I>> stepQueue = new LinkedList<>();
-    private final FlowBase<I,O> flowContext;
-    private Context<I> context;
+    private StatusStepEnum statusStepEnum;
 
-    public StepContext(FlowBase<I, O> flowContext,Agreement<I> flowInput) {
-        this.flowContext = flowContext;
-        this.context = new Context<>(flowInput);
+    public StepContext( String name, String key, TypeStepEnum type, int order) {
+        this.name = name;
+        this.key = key;
+        this.type = type;
+        this.order = order;
     }
+
+    @Override
+    public TypeStepEnum type() {
+        return type;
+    }
+
+    @Override
+    public StatusStepEnum status() {
+        return statusStepEnum;
+    }
+
+    @Override
+    public StepBase<I> status(StatusStepEnum statusStepEnum) {
+        this.statusStepEnum = statusStepEnum;
+        return this;
+    }
+
+    @Override
+    public String key() {
+        return key;
+    }
+
+    @Override
+    public String name() {
+        return name;
+    }
+
+    @Override
+    public PredictContext<I> predictContext() {
+        return predictContext;
+    }
+
+    @Override
+    public FunctionContext<Object, I> functionContext() {
+        return functionContext;
+    }
+
+    @Override
+    public ConsumerContext<I> consumerContext() {
+        return consumerContext;
+    }
+
+    @Override
+    public StepBase<I> consumerContext(ConsumerContext<I> consumerContext) {
+        this.consumerContext = consumerContext;
+        return this;
+    }
+
+    @Override
+    public StepBase<I> functionContext(FunctionContext<Object, I> functionContext) {
+        this.functionContext = functionContext;
+        return this;
+    }
+
+    @Override
+    public StepBase<I> predictContext(PredictContext<I> predictContext) {
+        this.predictContext = predictContext;
+        return this;
+    }
+
+    @Override
+    public int order() {
+        return order;
+    }
+
+
     
-
-    @Override
-    public FlowBase<I, O> runFlow() {
-        return runFlow(new RunFlow<>(context));
-    }
-
-    @Override
-    public FlowBase<I, O> runFlow(RunFlowBase<I,O>  runFlow) {
-        
-        runFlow
-            .addStepQueueToProcess(stepQueue)
-            .run();
-
-        flowContext.output(runFlow.collectOutput());
-
-        return flowContext;
-    }
-
-
-    @Override
-    public StepContextBase<I, O> stepValidate(String name, PredictContext<I> predict) {
-        stepQueue.add(
-                new Step<I>(name, UUID.randomUUID().toString(), TypeStepEnum.VALIDATION, stepQueue.size() + 1 ).predictContext(predict)
-                );
-        return this;
-    }
-
-    @Override
-    public StepContextBase<I, O> stepRetrive(String name, FunctionContext<Object, I> function) {
-        stepQueue.add(
-            new Step<I>(name, UUID.randomUUID().toString(), TypeStepEnum.RETRIEVE, stepQueue.size() + 1).functionContext(function)
-            );
-        return this;
-    }
-
-    @Override
-    public StepContextBase<I, O> stepMap(String name, FunctionContext<Object, I> function) {
-        stepQueue.add(
-            new Step<I>(name, UUID.randomUUID().toString(), TypeStepEnum.MAP, stepQueue.size() + 1).functionContext(function)
-            );
-        return this;
-    }
-
-
-  
 }

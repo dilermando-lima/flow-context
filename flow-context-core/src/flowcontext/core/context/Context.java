@@ -10,11 +10,21 @@ public class Context<I> implements ContextBase<I> {
 
     private final Agreement<I> flowInput;
     private final Map<String,Object> values;
-    private Object lastOutputStep;
+    private Map<String,Object> outputStepMap;
     
     public Context(Agreement<I> flowInput) {
         this.flowInput = flowInput;
         this.values = new HashMap<>(3);
+        this.outputStepMap = new HashMap<>(3);
+    }
+
+    public Object addOutputStep(String nameStep, Object output) {
+        return outputStepMap.put(nameStep,output);
+    }
+
+    @Override
+    public Object retriveOutputStep(String nameStep) {
+        return outputStepMap.get(nameStep);
     }
 
     @Override
@@ -28,11 +38,6 @@ public class Context<I> implements ContextBase<I> {
     }
 
     @Override
-    public Object lastOutputStep() {
-        return lastOutputStep;
-    }
-
-    @Override
     public ContextBase<I> saveVal(String key, Object value) {
         values.put(key, value);
         return this;
@@ -43,10 +48,8 @@ public class Context<I> implements ContextBase<I> {
         return key != null && values.containsKey(key);
     }
 
-    @Override
-    public ContextBase<I> lastOutputStep(Object lastOutputStep) {
-        this.lastOutputStep = lastOutputStep;
-        return this;
-    }
+
+
+
     
 }

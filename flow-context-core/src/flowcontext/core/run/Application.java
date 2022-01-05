@@ -11,17 +11,24 @@ public class Application {
 
         var flowContext =  new FlowContext<LocalDateTime,String>();
 
-        flowContext
-            .input(Agreement.build((LocalDateTime) null))
-            .start()
-                .stepRetrive("retrieve 1", context ->  LocalDateTime.now() )
-                .stepValidate("validate 1",context -> context.lastOutputStep() != null )
-                .stepMap("map 1", Object::toString)
+        var agreementInput = new Agreement<LocalDateTime>();
+        agreementInput.setPayload((LocalDateTime) null);
+        agreementInput.getHeader().put("header1", "value");
+        agreementInput.getMetadata().setOwnerFlow("application-1");
+
+
+        var agreementOutput = flowContext
+            .input(agreementInput)
+            .register()
+                .stepRetrive(   "retrieve 1",  context ->  LocalDateTime.now() )
+                .stepValidate(  "validate 1", context -> context.retriveOutputStep("retrieve 1") != null )
+                .stepMap(       "map 1",           context -> context.retriveOutputStep("retrieve 1").toString()  )
+                .collectOutput( "final ",    flowContext , context -> (String) context.retriveOutputStep("map 1") )
             .runFlow();
+
         
-        System.out.println(flowContext.output().getPayload());
-        System.out.println(flowContext.output().getHeader());
-        System.out.println(flowContext.output().getMetadata());
+        System.out.println(agreementOutput);
+
 
 
     }

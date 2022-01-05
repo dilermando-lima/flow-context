@@ -15,9 +15,19 @@ public class Agreement<P> {
 
     private List<StepAgreement> stepList;
 
+    
+    @Override
+    public String toString() {
+        return "Agreement [" + (header != null ? "header=" + header + ", " : "")
+                + (metadata != null ? "metadata=" + metadata + ", " : "")
+                + (payload != null ? "payload=" + payload + ", " : "")
+                + (stepList != null ? "stepList=" + stepList : "") + "]";
+    }
+
     public Agreement(){
         stepList = new LinkedList<>();
         header = new HashMap<>();
+        metadata = new Metadata();
     }
 
     public static <P> Agreement<P> build(P payload){

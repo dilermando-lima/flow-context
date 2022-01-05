@@ -3,8 +3,9 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Launch Application",
+            "name": "flow-context-core",
             "request": "launch",
+            "console": "internalConsole",
             "mainClass": "flowcontext.core.run.Application",
             "projectName": "flow-context-core"
         },
@@ -16,15 +17,6 @@
             "request": "launch",
             "mainClass": "flowcontext.client.Application",
             "projectName": "client"
-        },
-        {
-            "type": "java",
-            "name": "core",
-            "console": "internalConsole",
-            "envFile": "${workspaceFolder}/local.env",
-            "request": "launch",
-            "mainClass": "flowcontext.core.Application",
-            "projectName": "flow-context-core"
         }
     ]
 }

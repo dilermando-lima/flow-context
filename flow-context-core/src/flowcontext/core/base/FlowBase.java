@@ -1,7 +1,6 @@
 package flowcontext.core.base;
 
-import java.time.temporal.Temporal;
-import java.util.LinkedList;
+import java.util.List;
 
 import flowcontext.core.agreement.Agreement;
 import flowcontext.core.function.ConsumerContext;
@@ -12,31 +11,16 @@ public interface FlowBase<I,O> {
 
         public FlowBase<I,O> input(Agreement<I> flowInput);
         public Agreement<I> input();
-        public FlowBase<I,O> output(Agreement<O> flowOutput);
-        public Agreement<O> output();
 
-        public StepContextBase<I,O> start();
+        public <T extends StepRegisterBase<I,O>> T register(T stepRegister);
 
+        Agreement<O> runFlow(RunFlowBase<I,O> runFlow);
+        
+        public interface StepRegisterBase<I,O>{
 
-        public interface StepContextBase<I,O>{
+            public  <T extends FlowBase<I,O>> T collectOutput(String name, T flowContext, FunctionContext<Object,I> function);
 
-            public StepContextBase<I,O> stepValidate(String name, PredictContext<I> predict);
-
-            public StepContextBase<I,O> stepRetrive(String name, FunctionContext<Object,I> function);
-
-            public StepContextBase<I,O> stepMap(String name, FunctionContext<Object,I> function);
-
-            // StepContextBase stepCheckSkipNext(StepBase<?> stepBase)
-
-            // StepContextBase stepExec(StepBase<?> stepBase)
-
-            // StepContextBase nonStepExec(StepBase<?> stepBase
-
-            // StepContextBase stepWhenAbortFlow(StepBase<?> stepBase)
-
-            FlowBase<I,O> runFlow(RunFlowBase<I,O> runFlow);
-
-            FlowBase<I,O> runFlow();
+            public List<StepBase<I>> stepQueue();
 
         }
 
@@ -50,16 +34,14 @@ public interface FlowBase<I,O> {
 
             boolean containsVal(String key);
 
-            Object lastOutputStep();
-
-            ContextBase<I> lastOutputStep(Object lastOutputStep);
+            Object retriveOutputStep(String nameStep);
 
         }
 
 
         public interface RunFlowBase<I,O>{
             
-            RunFlowBase<I,O> addStepQueueToProcess(LinkedList<StepBase<I>> stepQueue);
+            RunFlowBase<I,O> addStepQueueToProcess(List<StepBase<I>> stepQueue);
 
             RunFlowBase<I,O> run();
 
@@ -81,10 +63,6 @@ public interface FlowBase<I,O> {
             String key();
 
             String name();
-
-            Object input();
-
-            Object output();
 
             PredictContext<I> predictContext();
 
@@ -117,16 +95,14 @@ public interface FlowBase<I,O> {
         }
 
         public enum TypeStepEnum{
-            VALIDATION, RETRIEVE, MAP, EXEC, CHECK_SKIP_NEXT , ON_ABORTED_FLOW, CUSTOM;
-        }
-
-
-        public interface ErrorBase{
-
-            String message();
-            Temporal datetime();
-            String type();
-
+            VALIDATION, 
+            RETRIEVE, 
+            MAP, 
+            EXECUTE, 
+            GOST,
+            CHECK_SKIP_NEXT , 
+            ON_ABORTED_FLOW, 
+            COLLECT_OUTPUT
         }
     
 }
