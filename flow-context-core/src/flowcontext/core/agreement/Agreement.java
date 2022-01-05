@@ -5,7 +5,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Agreement<P> {
+public class Agreement<P>{
 
     private P payload;
 
@@ -15,7 +15,6 @@ public class Agreement<P> {
 
     private List<StepAgreement> stepList;
 
-    
     @Override
     public String toString() {
         return "Agreement [" + (header != null ? "header=" + header + ", " : "")
@@ -34,6 +33,23 @@ public class Agreement<P> {
         Agreement<P> agreement = new Agreement<>();
         agreement.setPayload(payload);
         return agreement;
+    }
+
+
+    public boolean hasError(){
+        return stepList.stream().anyMatch(step -> step.getError() != null);
+    }
+
+    public boolean hasError(String nameStep){
+        return stepList.stream().anyMatch(step -> step.getError() != null && step.getName().equals(nameStep));
+    }
+
+    public Error getErrorByStep(String nameStep){
+        return stepList.stream()
+                .filter(step -> step.getName().equals(nameStep))
+                .findFirst()
+                .orElseGet(StepAgreement::new)
+                .getError();
     }
 
     public P getPayload() {

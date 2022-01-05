@@ -1,8 +1,5 @@
 package flowcontext.core.agreement;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import flowcontext.core.base.FlowBase.StatusStepEnum;
 import flowcontext.core.base.FlowBase.TypeStepEnum;
 
@@ -12,21 +9,17 @@ public class StepAgreement {
     private String name;
     private TypeStepEnum type;
     private StatusStepEnum statusStepEnum;
-    private List<Error> errorList;
+    private Error error;
     private int order;
+
 
     @Override
     public String toString() {
-        return "StepAgreement [" + (errorList != null ? "errorList=" + errorList + ", " : "")
+        return "StepAgreement [" + (error != null ? "error=" + error + ", " : "")
                 + (key != null ? "key=" + key + ", " : "") + (name != null ? "name=" + name + ", " : "") + "order="
                 + order + ", " + (statusStepEnum != null ? "statusStepEnum=" + statusStepEnum + ", " : "")
                 + (type != null ? "type=" + type : "") + "]";
     }
-
-    public StepAgreement(){
-        errorList = new ArrayList<>();
-    }
-
     
     public String getKey() {
         return key;
@@ -52,11 +45,11 @@ public class StepAgreement {
     public void setStatusStepEnum(StatusStepEnum statusStepEnum) {
         this.statusStepEnum = statusStepEnum;
     }
-    public List<Error> getErrorList() {
-        return errorList;
+    public Error getError() {
+        return error;
     }
-    public void setErrorList(List<Error> errorList) {
-        this.errorList = errorList;
+    public void setError(Error error) {
+        this.error = error;
     }
     public int getOrder() {
         return order;

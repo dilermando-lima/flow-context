@@ -2,6 +2,7 @@ package flowcontext.core.implementation;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Stream;
 
 import flowcontext.core.agreement.Agreement;
 import flowcontext.core.agreement.Error;
@@ -10,6 +11,7 @@ import flowcontext.core.base.FlowBase.RunFlowBase;
 import flowcontext.core.base.FlowBase.StatusStepEnum;
 import flowcontext.core.base.FlowBase.StepBase;
 import flowcontext.core.base.FlowBase.TypeStepEnum;
+import flowcontext.core.config.ConfigProp;
 import flowcontext.core.context.Context;
 
 public class RunFlowDefault<I,O> implements RunFlowBase<I,O> {
@@ -37,6 +39,11 @@ public class RunFlowDefault<I,O> implements RunFlowBase<I,O> {
     }
 
     private void processStep(StepBase<I> step){
+
+        boolean isStepIgnoredInConfig = context.config().containsKey(ConfigProp.STEP_IGNORE_LIST) && 
+                                        Stream.of((String[])context.config().get(ConfigProp.STEP_IGNORE_LIST)).anyMatch(stepIgnore -> stepIgnore.equals(step.name()));
+                                        
+        if(isStepIgnoredInConfig ) return;
 
         try{
 
@@ -85,7 +92,7 @@ public class RunFlowDefault<I,O> implements RunFlowBase<I,O> {
         stepAgreement.setKey(step.key());
         stepAgreement.setOrder(step.order());
         stepAgreement.setStatusStepEnum(step.status());
-        if( error != null) stepAgreement.getErrorList().add(error);
+        if( error != null) stepAgreement.setError(error);
         return stepAgreement;
     }
 

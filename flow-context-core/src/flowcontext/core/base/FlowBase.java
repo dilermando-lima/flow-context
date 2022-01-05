@@ -1,8 +1,11 @@
 package flowcontext.core.base;
 
 import java.util.List;
+import java.util.Map;
 
 import flowcontext.core.agreement.Agreement;
+import flowcontext.core.config.ConfigProp;
+import flowcontext.core.config.MapConfig;
 import flowcontext.core.function.ConsumerContext;
 import flowcontext.core.function.FunctionContext;
 import flowcontext.core.function.PredictContext;
@@ -15,7 +18,13 @@ public interface FlowBase<I,O> {
         public <T extends StepRegisterBase<I,O>> T register(T stepRegister);
 
         Agreement<O> runFlow(RunFlowBase<I,O> runFlow);
+
+        public FlowBase<I,O> overrideConfig(Map<ConfigProp,Object> mapConfigOverride);
+
+        public FlowBase<I,O> config(ConfigLoadBase configLoad, boolean reloadConfigInEachFlow);
         
+
+
         public interface StepRegisterBase<I,O>{
 
             public  <T extends FlowBase<I,O>> T collectOutput(String name, T flowContext, FunctionContext<Object,I> function);
@@ -35,6 +44,8 @@ public interface FlowBase<I,O> {
             boolean containsVal(String key);
 
             Object retriveOutputStep(String nameStep);
+
+            Map<ConfigProp,Object> config();
 
         }
 
@@ -104,5 +115,10 @@ public interface FlowBase<I,O> {
             ON_ABORTED_FLOW, 
             COLLECT_OUTPUT
         }
+
+        @FunctionalInterface
+        public interface ConfigLoadBase{
+            MapConfig loadConfig();
+        }   
     
 }
