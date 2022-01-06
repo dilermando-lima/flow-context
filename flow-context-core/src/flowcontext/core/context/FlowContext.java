@@ -8,23 +8,24 @@ import flowcontext.core.base.FlowBase;
 import flowcontext.core.config.ConfigProp;
 import flowcontext.core.config.FlowConfigApplicationScope;
 import flowcontext.core.config.MapConfig;
+import flowcontext.core.exception.CheckError;
 import flowcontext.core.implementation.ConfigLoadDefault;
+import flowcontext.core.implementation.RegisterStepDefault;
 import flowcontext.core.implementation.RunFlowDefault;
-import flowcontext.core.implementation.StepRegisterDefault;
 
 public class FlowContext<I,O> implements FlowBase<I,O> {
     
     private Agreement<I> flowInput;
     private Context<I> context;
-    private StepRegisterBase<I, O> stepRegister;
+    private RegisterStepBase<I, O> stepRegister;
 
     private MapConfig config;
     private ConfigLoadBase configLoad;
     private boolean reloadConfigInEachFlow;
     private Map<ConfigProp, Object> mapConfigOverride;
 
-    public StepRegisterDefault<I, O> register() {
-        return register(new StepRegisterDefault<I, O>());
+    public RegisterStepDefault<I, O> register() {
+        return register(new RegisterStepDefault<I, O>());
     }
 
     private void handleConfigLoading(){
@@ -49,11 +50,17 @@ public class FlowContext<I,O> implements FlowBase<I,O> {
 
     private void handleContext(){
         handleConfigLoading();
+
+        if( flowInput == null ) flowInput = Agreement.build(null);
+
         this.context =  new Context<>(flowInput, Collections.unmodifiableMap(config));
     }
 
     @Override
-    public <T extends StepRegisterBase<I, O>> T register(T stepRegister) {
+    public <T extends RegisterStepBase<I, O>> T register( T stepRegister) {
+
+        CheckError.SETUP_REGISTER_STEP_REQUIRES_NON_NULL.valid(stepRegister == null).throwIfTrue();
+
         this.stepRegister = stepRegister;
         return stepRegister;
     }
@@ -66,7 +73,7 @@ public class FlowContext<I,O> implements FlowBase<I,O> {
 
     @Override
     public Agreement<I> input() {
-        return flowInput;
+        return flowInput == null ? Agreement.build(null) : flowInput;
     }
 
     @Override

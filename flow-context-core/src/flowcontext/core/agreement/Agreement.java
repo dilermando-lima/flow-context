@@ -29,12 +29,16 @@ public class Agreement<P>{
         metadata = new Metadata();
     }
 
-    public static <P> Agreement<P> build(P payload){
+    public static <P> Agreement<P> build(P payload, Map<String,String> header){
         Agreement<P> agreement = new Agreement<>();
         agreement.setPayload(payload);
+        agreement.header = header == null ? new HashMap<>() : header;
         return agreement;
     }
 
+    public static <P> Agreement<P> build(P payload){
+        return build(payload);
+    }
 
     public boolean hasError(){
         return stepList.stream().anyMatch(step -> step.getError() != null);

@@ -15,7 +15,7 @@ public interface FlowBase<I,O> {
         public FlowBase<I,O> input(Agreement<I> flowInput);
         public Agreement<I> input();
 
-        public <T extends StepRegisterBase<I,O>> T register(T stepRegister);
+        public <T extends RegisterStepBase<I,O>> T register(T stepRegister);
 
         Agreement<O> runFlow(RunFlowBase<I,O> runFlow);
 
@@ -25,7 +25,7 @@ public interface FlowBase<I,O> {
         
 
 
-        public interface StepRegisterBase<I,O>{
+        public interface RegisterStepBase<I,O>{
 
             public  <T extends FlowBase<I,O>> T collectOutput(String name, T flowContext, FunctionContext<Object,I> function);
 

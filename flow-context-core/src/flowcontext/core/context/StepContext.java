@@ -3,6 +3,7 @@ package flowcontext.core.context;
 import flowcontext.core.base.FlowBase.StatusStepEnum;
 import flowcontext.core.base.FlowBase.StepBase;
 import flowcontext.core.base.FlowBase.TypeStepEnum;
+import flowcontext.core.exception.CheckError;
 import flowcontext.core.function.ConsumerContext;
 import flowcontext.core.function.FunctionContext;
 import flowcontext.core.function.PredictContext;
@@ -21,6 +22,10 @@ public class StepContext<I> implements StepBase<I>{
     private StatusStepEnum statusStepEnum;
 
     public StepContext( String name, String key, TypeStepEnum type, int order) {
+
+        CheckError.SETUP_STEP_NAME_REQUIRES_NON_NULL.valid(name == null).throwIfTrue();
+        CheckError.SETUP_STEP_NAME_HAS_WRONG_FORMAT.replace(name).valid(!name.matches("^[a-zA-Z0-9_\\-.]{0,60}+$")).throwIfTrue();
+
         this.name = name;
         this.key = key;
         this.type = type;

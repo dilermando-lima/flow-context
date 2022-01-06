@@ -5,10 +5,12 @@ import java.time.LocalDateTime;
 import flowcontext.core.agreement.Agreement;
 import flowcontext.core.config.ConfigProp;
 import flowcontext.core.context.FlowContext;
+import flowcontext.core.implementation.RegisterStepDefault;
 
 public class Application {
 
     public static void main(String[] args) {
+
 
         var flowContext =  new FlowContext<LocalDateTime,String>();
 
@@ -19,9 +21,11 @@ public class Application {
 
 
         var agreementOutput = flowContext
+            // .input()
             .input(agreementInput)
             // .overrideConfig(Map.of(ConfigProp.STEP_IGNORE_LIST,"retrievasdfasdfe 1"))
             .register()
+            //.register()
                 .stepRetrive(   "retrieve 1", context -> {  
                     System.out.println(context.config().get(ConfigProp.STEP_IGNORE_LIST));
                      context.config().put(ConfigProp.STEP_IGNORE_LIST, "fasdf"); 
